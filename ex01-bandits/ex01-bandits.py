@@ -28,21 +28,44 @@ def greedy(bandit, timesteps):
     possible_arms = range(bandit.n_arms)
 
     # TODO: init variables (rewards, n_plays, Q) by playing each arm once
+    for a in possible_arms:
+        rewards[a] = bandit.play_arm(a)
+        n_plays[a] = 1
+        Q[a] = rewards[a]
 
     # Main loop
     while bandit.total_played < timesteps:
         # This example shows how to play a random arm:
-        a = random.choice(possible_arms)
-        reward_for_a = bandit.play_arm(a)
+        # a = random.choice(possible_arms)
+        # reward_for_a = bandit.play_arm(a)
         # TODO: instead do greedy action selection
         # TODO: update the variables (rewards, n_plays, Q) for the selected arm
-
+        a = int(max(Q))
+        rewards[a] += bandit.play_arm(a)
+        n_plays[a] += 1
+        Q[a] = rewards[a]/n_plays[a]
 
 def epsilon_greedy(bandit, timesteps):
     # TODO: epsilon greedy action selection (you can copy your code for greedy as a starting point)
-    while bandit.total_played < timesteps:
-        reward_for_a = bandit.play_arm(0)  # Just play arm 0 as placeholder
+    rewards = np.zeros(bandit.n_arms)
+    n_plays = np.zeros(bandit.n_arms)
+    Q = np.zeros(bandit.n_arms)
+    possible_arms = range(bandit.n_arms)
+    epsilon = .1
 
+    for a in possible_arms:
+        rewards[a] = bandit.play_arm(a)
+        n_plays[a] = 1
+        Q[a] = rewards[a]
+
+    while bandit.total_played < timesteps:
+        if random.random() > epsilon:
+            a = int(max(Q))
+        else:
+            a = random.choice(possible_arms)
+        rewards[a] += bandit.play_arm(a)  # Just play arm 0 as placeholder
+        n_plays[a] += 1
+        Q[a] = rewards[a]/n_plays[a]
 
 def main():
     n_episodes = 500  # TODO: set to 10000 to decrease noise in plot

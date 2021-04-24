@@ -68,7 +68,7 @@ def epsilon_greedy(bandit, timesteps):
         Q[a] = rewards[a]/n_plays[a]
 
 def main():
-    n_episodes = 500  # TODO: set to 10000 to decrease noise in plot
+    n_episodes = 10000  # TODO: set to 10000 to decrease noise in plot
     n_timesteps = 1000
     rewards_greedy = np.zeros(n_timesteps)
     rewards_egreedy = np.zeros(n_timesteps)

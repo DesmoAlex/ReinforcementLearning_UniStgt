@@ -57,7 +57,7 @@ def greedy(bandit, timesteps):
 
 def epsilon_greedy(bandit, timesteps):
     # define epsilon
-    e = 0.9
+    e = 0.1
     # TODO: epsilon greedy action selection (you can copy your code for greedy as a starting point)
     # Initialize (same as in greedy)
     rewards = np.zeros(bandit.n_arms)
@@ -79,25 +79,22 @@ def epsilon_greedy(bandit, timesteps):
     while bandit.total_played < timesteps:
         # weigthed selection (greedy or not greedy)
         # if 0 go for random, (if 1 go for greedy)
-        if random.choices([0,1], weights=(e,1-e), k=1) == 0:
-            ## TODO: go for random action selection
-            a = random.choice(possible_arms)
-            rewards[a] += bandit.play_arm(a)
-            n_plays[a] += 1
-            Q[a] = rewards[a]/n_plays[a]
-
-
-        else:
-            # TODO: instead do greedy action selection
+        if random.random() > e:
             # search indices with maximum estimate of action-value
             a = np.argmax(Q)
-            # TODO: update the variables (rewards, n_plays, Q) for the selected arm
+            
+        else:
+            # TODO: instead do greedy action selection
+            a = random.choice(possible_arms)
             # play greedy arm a
-            rewards[a] += bandit.play_arm(a)
-            # incremet greedy arm a
-            n_plays[a] += 1
-            # calculate new estimated action-value
-            Q[a] = rewards[a]/n_plays[a]
+
+            
+        # TODO: update the variables (rewards, n_plays, Q) for the selected arm
+        rewards[a] += bandit.play_arm(a)
+        # incremet greedy arm a
+        n_plays[a] += 1
+        # calculate new estimated action-value
+        Q[a] = rewards[a]/n_plays[a]
 
         #reward_for_a = bandit.play_arm(0)  # Just play arm 0 as placeholder
 

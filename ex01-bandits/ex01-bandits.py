@@ -84,11 +84,11 @@ def epsilon_greedy(bandit, timesteps):
             a = np.argmax(Q)
             
         else:
-            # TODO: instead do greedy action selection
+            # instead do random action selection
             a = random.choice(possible_arms)
-            # play greedy arm a
-
             
+
+        # play arm   
         # TODO: update the variables (rewards, n_plays, Q) for the selected arm
         rewards[a] += bandit.play_arm(a)
         # incremet greedy arm a

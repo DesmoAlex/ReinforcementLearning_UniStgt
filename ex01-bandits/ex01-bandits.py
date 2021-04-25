@@ -77,8 +77,8 @@ def epsilon_greedy(bandit, timesteps):
 
 
     while bandit.total_played < timesteps:
-        # weigthed selection (greedy or not greedy)
-        # if 0 go for random, (if 1 go for greedy)
+        # epsilon greedy action selection
+        #
         if random.random() > e:
             # search indices with maximum estimate of action-value
             a = np.argmax(Q)

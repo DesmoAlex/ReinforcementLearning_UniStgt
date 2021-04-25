@@ -3,10 +3,13 @@
 % sollte man die folgenden Pakete einbinden: 
 \usepackage[latin1]{inputenc}% erm\"oglich die direkte Eingabe der Umlaute 
 \usepackage[T1]{fontenc} % das Trennen der Umlaute
-\usepackage{ngerman} % hiermit werden deutsche Bezeichnungen genutzt und 
+% \usepackage{ngerman} % hiermit werden deutsche Bezeichnungen genutzt und 
                      % die W\"orter werden anhand der neue Rechtschreibung 
 		     % automatisch getrennt.
-\usepackage{authblk}  
+\usepackage{authblk}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{graphicx}
 
 \title{Reinforcement Learning Exercise 1}
 \author{Alexander J\"aggle}
@@ -25,15 +28,15 @@
 \maketitle
 
 \section{Multi-armed Bandits}
-Ziel der Arbeit ist es m\"oglichsten vielen oder wenn m\"oglichen es allen 
-zu erm\"oglichen, Dokumente mit \LaTeX{} zu erstellen!
 
 \begin{itemize}
     \item[a)] The probability of the greedy action being selected is $p = .5$ since $p = 1- \epsilon$.   
-    \item[b)] {\begin{itemize}
+    \item[b)] {
+    \begin{itemize}
         \item[1.] random = [{1,2,5}]
         \item[2.] greedy = [{3,4}]
-    \end{itemize}}
+    \end{itemize}
+    }
 \end{itemize}
 
 
@@ -46,36 +49,23 @@ A similar scenario happened at timestep $t = 4$, when action-value estimates $Q$
 the action-value estimate is 1.5, while the other two estimates are 1 respectively 0. Since the next action, which
 was selected was action $2$, and thus it was greedy. 
 
-
-\section{Dokumentenklassen} \label{documentclasses}
+\section{Action Selection Strategies}
+The solution of our group will be submitted as \textit{ex01-bandits.py} and is also available on our 
+\href{https://github.com/DesmoAlex/ReinforcementLearning_UniStgt/tree/master/ex01-bandits}{GitHub}.
 
 \begin{itemize}
-\item article
-\item book 
-\item report 
-\item letter 
+    \item[a)] Changes were made between line 24 - 54 
+    \item[b)] Changes were made between line 58 - 99
+    \item[c)] E-Greedy performs better with a total amount of 805.76 compared to a score of 797.63
+                of the Greedy as can be seen in \cref{fig:comparison}. After roughly 300 executions, e-greedy surpasses the greedy in amount of
+                rewards.   
+                \item[d)] Possible ways to improve the methods is to change $\epsilon$ or increase the number of executions.
 \end{itemize}
-
-
-\begin{enumerate}
-\item article
-\item book 
-\item report 
-\item letter 
-\end{enumerate}
-
-\begin{description}
-\item[article\label{article}]{Article ist \ldots}
-\item[book\label{book}]{Die book Klasse ist \ldots}
-\item[report\label{report}]{Die Klasse report erm\"oglicht es  \ldots}
-\item[letter\label{letter}]{Wenn man einen Breif schreiben sollte man eine 
-	andere Klasse nutzen, da diese f\"ur ein anderes als das deutsche 
-	Briefformat ausgelegt ist.}
-\end{description}
-
-
-\section{Fazit}\label{conclusions}
-Nach langer Suche hat sich herausgestellt, dass es kein l\"angeres 
-\LaTeX{} Beispiel, als das von \cite{doe} geschriebene gibt. 
+            
+\begin{figure}[h]
+    \includegraphics[scale=0.8]{Figure_1.png}
+    \caption{$\epsilon$-Greedy vs. Greedy}
+    \label{fig:comparison}
+\end{figure}
 
 \end{document}

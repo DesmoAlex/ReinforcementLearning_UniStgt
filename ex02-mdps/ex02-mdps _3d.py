@@ -8,9 +8,9 @@ custom_map3x3 = [
     'FFF',
     'FHG',
 ]
-env = gym.make("FrozenLake-v0", desc=custom_map3x3)
+#env = gym.make("FrozenLake-v0", desc=custom_map3x3)
 # TODO: Uncomment the following line to try the default map (4x4):
-#env = gym.make("FrozenLake-v0")
+env = gym.make("FrozenLake-v0")
 
 # Uncomment the following lines for even larger maps:
 #random_map = generate_random_map(size=5, p=0.8)
@@ -54,7 +54,7 @@ def value_policy(policy):
     # Define Unit Matrix
     I = np.zeros((n_states, n_states))
     for i in range(n_states):
-    	I[i][i] = 1
+        I[i][i] = 1
 
     # subtract gamma*P from I
     Z = np.subtract(I, gamma*P)
@@ -79,40 +79,54 @@ def bruteforce_policies():
     # loop trough all possible policies (TODO: except terminals)
     #lv0 state_0
     for a in range(4):
-    	policy[0] = a
-    	#lv1 state_1
-    	for b in range(4):
-    		policy[1] = b
-    		#lv2 state_2
-    		for c in range(4):
-    			policy[2] = c
-    			#lv3 state_3
-    			for d in range(4):
-    				policy[3] = d
-    				#lv4 state_4
-    				for e in range(4):
-    					policy[4] = e
-    					print(policy)
-    					#lv5 state_5
-    					for f in range(4):
-    						policy[5] = f
-    						#lv6 state_6
-    						for g in range(4):
-    							policy[6] = g
-    							#lv7 state_7
-    							for h in range(4):
-    								policy[7] = h
-    								#lv8 state_8
-    								for i in range(4):
-    									policy[8] = i
-
-    									policy_value = value_policy(policy)
-    									if np.all(policy_value == optimalvalue):
-    										optimalpolicies.append(policy)
-    									if np.all(policy_value >= optimalvalue):
-    										optimalvalue = policy_value
-    										optimalpolicies = []
-    										optimalpolicies.append(policy)
+        policy[0] = a
+        #lv1 state_1
+        for b in range(4):
+            policy[1] = b
+            #lv2 state_2
+            for c in range(4):
+                policy[2] = c
+                #lv3 state_3
+                for d in range(4):
+                    policy[3] = d
+                    #lv4 state_4
+                    for e in range(4):
+                        policy[4] = e
+                        #lv5 state_5
+                        for f in range(4):
+                            policy[5] = f
+                            #lv6 state_6
+                            for g in range(4):
+                                policy[6] = g
+                                #lv7 state_7
+                                for h in range(4):
+                                    policy[7] = h
+                                    #lv8 state_8
+                                    for i in range(4):
+                                        policy[8] = i
+                                        #lv 9 state_9
+                                        for j in range(4):
+                                            policy[9] = j
+                                            #lv10 state_1ß
+                                            for k in range(4):
+                                                policy[10] = k
+                                                #lv11 state_11
+                                                for l in range(4):
+                                                    policy[11] = l
+                                                    #lv12 state_12
+                                                    for m in range(4):
+                                                        policy[12] = m
+                                                        #lv13 state_4
+                                                        for n in range(4):
+                                                            policy[13] = n
+                                                            print(policy)
+                                                            policy_value = value_policy(policy)
+                                                            if np.all(policy_value == optimalvalue):
+                                                                optimalpolicies.append(policy)
+                                                            if np.all(policy_value >= optimalvalue):
+                                                                optimalvalue = policy_value
+                    #                                           optimalpolicies = []
+                                                                optimalpolicies.append(policy)
 
 
 

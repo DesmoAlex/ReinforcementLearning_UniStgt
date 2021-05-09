@@ -107,12 +107,11 @@ def bruteforce_policies():
     									policy[8] = i
 
     									policy_value = value_policy(policy)
-    									if np.all(policy_value == optimalvalue):
+    									if (policy_value == optimalvalue).all:
     										optimalpolicies.append(policy)
-    									if np.all(policy_value >= optimalvalue):
+    									if (policy_value >= optimalvalue).all: 
     										optimalvalue = policy_value
-    										optimalpolicies = []
-    										optimalpolicies.append(policy)
+    										optimalpolicies = [policy]
 
 
 

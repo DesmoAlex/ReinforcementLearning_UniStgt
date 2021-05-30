@@ -2,6 +2,10 @@ import gym
 import numpy as np
 from itertools import product
 import matplotlib.pyplot as plt
+import random
+import statistics
+
+from numpy.lib import average
 
 
 def print_policy(Q, env):
@@ -86,10 +90,51 @@ def plot_Q(Q, env):
     plt.yticks([])
 
 
-def sarsa(env, alpha=0.1, gamma=0.9, epsilon=0.1, num_ep=int(1e4)):
+
+
+def policy_q(env,q,s, epsilon):
+    if random.random() > epsilon:
+        # greedy
+        a = np.argmax(q[s])
+    
+    else:
+        # random
+        a = np.random.randint(env.action_space.n)
+    return a
+
+
+
+
+def sarsa(env, alpha=0.1, gamma=0.9, epsilon=0.1, num_ep=int(4e4)):
     Q = np.zeros((env.observation_space.n,  env.action_space.n))
+    episode_length = []
+    average_length = np.zeros(num_ep)
 
     # TODO: implement the sarsa algorithm
+    for i in range(num_ep):
+        print("episode: " + str(i)) # DEBUG
+        # Init S
+        s = env.reset()
+        # Choose a from s using policy derived from Q
+        a = policy_q(env,Q,s,epsilon)
+        done = False
+        ep_length = 0
+        while not done:
+            s_,r,done, _ = env.step(a)
+            ep_length += 1
+            # take action a from q
+            a_ = policy_q(env,Q,s,epsilon)
+            Q[s][a] += alpha*(r + gamma*Q[s_][a_] - Q[s][a])
+            if r != 0:
+                print(str(r) + str(Q[s][a]))
+            s = s_
+            a = a_
+        
+        episode_length.append(ep_length)
+        average_length[i-1] = np.average(episode_length)
+
+
+
 
     # This is some starting point performing random walks in the environment:
     for i in range(num_ep):
@@ -98,12 +143,37 @@ def sarsa(env, alpha=0.1, gamma=0.9, epsilon=0.1, num_ep=int(1e4)):
         while not done:
             a = np.random.randint(env.action_space.n)
             s_, r, done, _ = env.step(a)
+    
+    plt.plot(average_length)
     return Q
 
 
-def qlearning(env, alpha=0.1, gamma=0.9, epsilon=0.1, num_ep=int(1e4)):
+def qlearning(env, alpha=0.1, gamma=0.9, epsilon=0.1, num_ep=int(4e4)):
     Q = np.zeros((env.observation_space.n,  env.action_space.n))
+    #Q = np.random.rand(env.observation_space.n,  env.action_space.n)
+    #terminal state 
     # TODO: implement the qlearning algorithm
+    episode_length = []
+    average_length = np.zeros(num_ep)
+    for i in range(num_ep):
+        print("episode: " + str(i)) # DEBUG
+        # Init S
+        s = env.reset()
+        done = False
+        ep_length = 0
+        while not done:
+            # take action a from q
+            a = policy_q(env,Q,s,epsilon)
+            s_,r,done, _ = env.step(a)
+            ep_length += 1
+            Q[s][a] += alpha*(r + gamma*np.max(Q[s_]) - Q[s][a])
+            if r != 0: #DEBUG
+                print(str(r) + str(Q[s][a])) #DEBUG
+            s = s_
+        
+        episode_length.append(ep_length)
+        average_length[i-1] = np.average(episode_length)
+    plt.plot(average_length)
     return Q
 
 

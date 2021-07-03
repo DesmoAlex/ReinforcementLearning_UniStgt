@@ -2,6 +2,7 @@ import gym
 import numpy as np
 from itertools import product
 import matplotlib.pyplot as plt
+import random
 
 
 def print_policy(Q, env):
@@ -86,40 +87,155 @@ def plot_Q(Q, env):
     plt.yticks([])
 
 
-def sarsa(env, alpha=0.1, gamma=0.9, epsilon=0.1, num_ep=int(1e4)):
-    Q = np.zeros((env.observation_space.n,  env.action_space.n))
+def sarsa(env, alpha=0.1, gamma=0.9, epsilon=0.1, num_ep=int(1e4)):  #TODO implement decreasing epsilon
+    # zero initialisation:
+    Q = np.zeros((env.observation_space.n,  env.action_space.n))  # (16, 4)
 
-    # TODO: implement the sarsa algorithm
+    # # random initialisation:
+    # Q = np.random.rand(env.observation_space.n,  env.action_space.n)
+    # # set terminal states to 0:
+    # Q[5] *= 0
+    # Q[7] *= 0
+    # Q[11] *= 0
+    # Q[12] *= 0
+    # Q[-1] *= 0
 
-    # This is some starting point performing random walks in the environment:
+    # # This is some starting point performing random walks in the environment:
+    # for i in range(num_ep):
+    #     s = env.reset()
+    #     done = False
+    #     while not done:
+    #         a = np.random.randint(env.action_space.n)
+    #         s_, r, done, _ = env.step(a)
+
+    steps_per_episode = []
+    average_steps_per_episode = []
     for i in range(num_ep):
         s = env.reset()
+
+        ### 1. policy evaluation with epsilon-greedy:
+        if (random.random() < epsilon):
+        # if False:
+            a = random.choice(range(env.action_space.n))
+        else:
+            a = np.argmax(Q[s])
+        
+        
         done = False
+        # episode:
+        steps_per_episode_counter = 0
+        reached_goal = False
         while not done:
-            a = np.random.randint(env.action_space.n)
+            # take action a, observe R, s_
             s_, r, done, _ = env.step(a)
+
+            ### 1. policy evaluation with epsilon-greedy:
+            # choose a_ from s_ using epsilon-greedy
+            if (random.random() < epsilon):
+                a_ = random.choice(range(env.action_space.n))
+            else:
+                a_ = np.argmax(Q[s_])
+
+            ### 2. policy improvement:
+            # calc Q_s_a incrementally
+            Q[s][a] = Q[s][a] + alpha * ( r + gamma*Q[s_][a_] - Q[s][a] )
+            s = s_
+            a = a_
+
+            steps_per_episode_counter += 1
+            
+            if r == 1:
+                # env.render()
+                reached_goal = True
+                # print(r, reached_goal)
+            
+            
+        
+        # if reached_goal:
+        #     steps_per_episode.append(steps_per_episode_counter)
+        # else:
+        #     steps_per_episode.append(0)
+        steps_per_episode.append(steps_per_episode_counter)
+        average_steps_per_episode.append(np.average(steps_per_episode))
+
+        # print_policy(Q, env)
+        # print(steps_per_episode_counter)
+        # print()
+
+    # print(steps_per_episode)
+    # print(len(steps_per_episode))
+
+    ### plotting average episode length
+    # fig = plt.figure()
+    # plt.plot(range(len(steps_per_episode)), steps_per_episode)
+    plt.plot(average_steps_per_episode)
+    # plt.draw()  #NOTE let's computation continue
+
     return Q
 
 
 def qlearning(env, alpha=0.1, gamma=0.9, epsilon=0.1, num_ep=int(1e4)):
     Q = np.zeros((env.observation_space.n,  env.action_space.n))
-    # TODO: implement the qlearning algorithm
+    steps_per_episode = []
+    average_steps_per_episode = []
+    for i in range(num_ep):
+        s = env.reset()
+        
+        done = False
+        # episode:
+        steps_per_episode_counter = 0
+        reached_goal = False
+        while not done:
+            ### 1. policy evaluation with epsilon-greedy:
+            # choose a_ from s_ using epsilon-greedy
+            if (random.random() < epsilon):
+                a = random.choice(range(env.action_space.n))
+            else:
+                a = np.argmax(Q[s])
+
+            ### 2. policy improvement:
+            # take action a, observe R, s_
+            s_, r, done, _ = env.step(a)
+
+            # calc Q_s_a incrementally
+            Q[s][a] = Q[s][a] + alpha * ( r + gamma*max(Q[s_]) - Q[s][a] )
+            s = s_
+
+            steps_per_episode_counter += 1
+            
+            if r == 1:
+                # env.render()
+                reached_goal = True
+                # print(r, reached_goal)
+            
+            
+        
+        # if reached_goal:
+        #     steps_per_episode.append(steps_per_episode_counter)
+        # else:
+        #     steps_per_episode.append(0)
+
+        steps_per_episode.append(steps_per_episode_counter)
+        average_steps_per_episode.append(np.average(steps_per_episode))
+
+    plt.plot(average_steps_per_episode)
+
     return Q
 
 
 env=gym.make('FrozenLake-v0')
-#env=gym.make('FrozenLake-v0', is_slippery=False)
-#env=gym.make('FrozenLake-v0', map_name="8x8")
+# env=gym.make('FrozenLake-v0', is_slippery=False)
+# env=gym.make('FrozenLake-v0', map_name="8x8")
 
-print("Running sarsa...")
-Q = sarsa(env)
-plot_V(Q, env)
-plot_Q(Q, env)
-print_policy(Q, env)
-plt.show()
+# print("Running sarsa...")
+# Q = sarsa(env, epsilon=0.1, num_ep=int(5e4))
+# plot_V(Q, env)
+# plot_Q(Q, env)
+# print_policy(Q, env)
+# plt.show()
 
 print("Running qlearning")
-Q = qlearning(env)
+Q = qlearning(env, num_ep=int(5e4))
 plot_V(Q, env)
 plot_Q(Q, env)
 print_policy(Q, env)

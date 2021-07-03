@@ -50,7 +50,8 @@ def value_policy(policy):
     P = trans_matrix_for_policy(policy)
     # TODO: calculate and return v
     # (P, r and gamma already given)
-    return None
+    v = np.matmul( np.linalg.inv( np.identity(P.shape[0]) - gamma*P), r)
+    return v
 
 
 def bruteforce_policies():
@@ -81,6 +82,13 @@ def main():
     # Here a policy is just an array with the action for a state as element
     policy_left = np.zeros(n_states, dtype=np.int)  # 0 for all states
     policy_right = np.ones(n_states, dtype=np.int) * 2  # 2 for all states
+
+    # Habi: Start printing out stuff
+    # print(n_states)
+    # print()
+    # print(n_actions)
+    # print()
+    # print(trans_matrix_for_policy(policy_right))
 
     # Value functions:
     print("Value function for policy_left (always going left):")

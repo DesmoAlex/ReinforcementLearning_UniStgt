@@ -108,8 +108,8 @@ def policy_q(env,q,s, epsilon):
 def sarsa(env, alpha=0.1, gamma=0.9, epsilon=0.1, num_ep=int(4e4)):
     Q = np.zeros((env.observation_space.n,  env.action_space.n))
     episode_length = []
-    average_length = np.zeros(num_ep)
-
+    average_length = np.zeros(num_ep
+)
     # TODO: implement the sarsa algorithm
     for i in range(num_ep):
         print("episode: " + str(i)) # DEBUG

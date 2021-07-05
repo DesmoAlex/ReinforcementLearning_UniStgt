@@ -29,8 +29,8 @@ class DQN:
         self.target_model = build_NN(self.num_states, self.num_actions)
         self.target_model.summary()
         # optimizer:
-        self.optimizer = tf.optimizers.SGD(learning_rate=0.01)
-        #self.optimizer = tf.optimizers.Adam()
+        #self.optimizer = tf.optimizers.SGD(learning_rate=0.01)
+        self.optimizer = tf.optimizers.Adam()
         # parameters:
         self.discount = 0.99
         self.epsilon = 0.1
@@ -61,10 +61,12 @@ class DQN:
         while not done:
             action = self.eps_greedy(state, self.epsilon)
             next_state, reward, done, _ = self.env.step(action)
-            # save SARS' in buffer
-            self.buffer.append((state, action, next_state, reward))
             if done:
                 reward -= 100  # we apply an additional negative reward when done
+            # save SARS' in buffer
+            self.buffer.append((state, action, next_state, reward))
+            # save SARS for leater
+            state_,action_,next_state_,reward_ = state,action,next_state, reward
             # randomly sample batch for update
             state,action,next_state,reward = random.choice(self.buffer) 
             # compute the target value:
@@ -73,6 +75,9 @@ class DQN:
             value_target = reward + self.discount * np.max(self.target_model(np.atleast_2d(next_state)), axis=1)
             # compute the loss and apply the gradients:
             self.gradient_step(np.atleast_2d(state), action, value_target)
+
+            # reuse old sars
+            state,action,next_state, reward = state_,action_,next_state_,reward_
             state = next_state
             episode_reward += reward
         return episode_reward

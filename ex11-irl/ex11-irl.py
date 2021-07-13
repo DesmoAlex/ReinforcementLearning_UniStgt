@@ -1,8 +1,9 @@
+from sys import exec_prefix
 import gym
 import numpy as np
 from itertools import product
 import matplotlib.pyplot as plt
-
+from collections import Counter
 
 def generate_demonstrations(env, expertpolicy, epsilon=0.1, n_trajs=100):
     """ This is a helper function that generates trajectories using an expert policy """
@@ -76,11 +77,29 @@ def main():
     env.seed(0)
     np.random.seed(0)
     expertpolicy = [0, 3, 0, 3, 0, 0, 0, 0, 3, 1, 0, 0, 0, 2, 1, 0]
-    trajs = generate_demonstrations(env, expertpolicy, 0.1, 20)  # list of trajectories
+    trajs = generate_demonstrations(env, expertpolicy, 0.2, 10000)  # list of trajectories
     print("one trajectory is a list with (state, action) pairs:")
-    print (trajs[0])
+    # print (trajs[0])
+
+    # put all lists in one large list
+    all_trajs = []
+    for t in trajs:
+        all_trajs.extend(t)
+
+    # count occurences of different state-action pairs Occ(s,a)
+    a = Counter(all_trajs)
+
+    # extract the most occured state-action pairs for each state argmax_a Occ(s,a)
+    policy = [None] * len(expertpolicy)
+    for i in range(len(policy)):
+        for t in a:
+            if t[0] == i:
+                policy[i] = t[1] 
+                break
 
 
+    print(policy)
+    print(expertpolicy)
 
 
 if __name__ == "__main__":
